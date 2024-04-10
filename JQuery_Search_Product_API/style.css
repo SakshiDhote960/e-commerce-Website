@@ -1,0 +1,40 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+.onhover{
+    text-decoration: none;
+}
+.onhover:hover{
+    text-decoration: underline;
+}
+.procard{
+    height:700px;
+    width:260px;
+    line-height:22px;
+}
+.card-img-top{
+    height:200px;
+    width:258px;
+}
+
+
+
+@media only screen and (max-width:767px){
+    .girlimg{
+       width: 350px;
+       height: 450px;
+    }
+    .procard{
+        height:620px;
+        width:380px;
+        line-height:20px;
+    }
+    .card-img-top{
+        width:380px;
+    }
+    .containerbg1{
+        height:500px;
+        padding-top: 50px;
+    }
+}

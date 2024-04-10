@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Products Page</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  </head>
+  <body>
+
+    <!-- navbar start -->
+    <nav
+      class="navbar topnav pe-5"
+      style="background-color:rgb(40, 133, 177);">
+      <p class="text-light fs-2 ps-5">Shop<span class="text-danger fs-1">up</span></p>
+      <form class="d-flex mx-2 search">
+        <input
+          class="form-control me-2"
+          type="search"
+          placeholder="Search"
+          aria-label="Search" 
+        /><button class="btn btn-secondary" type="submit">
+          Search
+        </button>
+      </form>
+      <button
+        class="navbar-toggler navbar-light bg-light"
+        id="mobnav"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 ps-4">
+          <li class="nav-item">
+            <a class="nav-link active" href="home.html">
+                <a href="home.html" class="text-light onhover" style="font-size: 23px;">HOME</a>
+              </a>
+          </li>
+          <li class="nav-item" style="padding-right: 20px">
+            <a class="nav-link" href="products.html">
+                <a href="products.html" class="text-light onhover" style="font-size: 23px;">PRODUCTS</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <!-- navbar end -->
+
+    <!-- categories -->
+    <div
+      class="container-fluid"
+      style="height:fit-content;padding-left:15px;">
+      <div class="row gap-1 p-2" id="catRow"></div>
+    </div>
+
+    <!-- products -->
+    <div class="container-fluid">
+    <div class="container">
+      <div class="row" id="proRow"></div>
+    </div>
+    </div>
+
+
+    
+    <script>
+
+      // to load product data
+      $(document).ready(function () {
+        function loadData(link) {
+          $.ajax({
+            url: link,
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+              //  console.log(response)
+              let proInfo = "";
+              response.products.forEach((element) => {
+                proInfo += `<div class="col-sm-6 col-lg-3 pt-4 pb-4">
+                <div class="card" style="height:700px;width:260px;">
+                    <img src="${element.thumbnail}" class="card-img-top" style="height:200px;width:258px">
+                    <div class="card-body">
+                        <h4 class="title">${element.title}</h4>
+                        <p class="description">${element.description}</p>
+                        <p class="price"><b>Price:</b> ₹${element.price}</p>
+                        <p class="discountPercentage"><b>Discount:</b> ${element.discountPercentage}% off</p>
+                        <p class="rating"><b>Rating:</b> ${element.rating}</p>
+                        <p class="stock"><b>Stock:</b> ${element.stock}</p>
+                        <p class="brand"><b>Brand:</b> ${element.brand}</p>
+                        <p class="category"><b>Category: </b>${element.category}</p>
+                        <a href="view.html?id=${element.id}" class="btn btn-primary viewbtn"> View</a>
+                    </div>
+                </div>
+                </div>`;
+              });
+              $("#proRow").html(proInfo);
+            },
+            error: function() {
+              console.log(error);
+            },
+          });
+        }
+        loadData("https://dummyjson.com/products");
+
+      
+      // load selected products
+      $(document).on("click", ".catBtn", function(){
+       let cat = $(this).text();
+        console.log(cat);
+        loadData("https://dummyjson.com/products/category/" + cat);
+        $("#proRow").html($(cat));    
+    })
+
+    // search bar start
+    function searchText(searchValue){
+        $.ajax({
+          url : 'https://dummyjson.com/products/search?q=' + searchValue,
+          type :"GET",
+          dataType :"json",
+          success: function (response){
+            console.log(response);
+            let proInfo = "";
+              response.products.forEach((element) => {
+                proInfo += `<div class="col-sm-12 col-lg-3 pt-4 pb-4">
+                <div class="card procard">
+                    <img src="${element.thumbnail}" class="card-img-top">
+                    <div class="card-body">
+                        <h4 class="title">${element.title}</h4>
+                        <p class="description">${element.description}</p>
+                        <p class="price"><b>Price:</b> ₹${element.price}</p>
+                        <p class="discountPercentage"><b>Discount:</b> ${element.discountPercentage}% off</p>
+                        <p class="rating"><b>Rating:</b> ${element.rating}</p>
+                        <p class="stock"><b>Stock:</b> ${element.stock}</p>
+                        <p class="brand"><b>Brand:</b> ${element.brand}</p>
+                        <p class="category"><b>Category: </b>${element.category}</p>
+                        <a href="view.html?id=${element.id}" class="btn btn-primary viewbtn"> View</a>
+                    </div>
+                </div>
+                </div>`;
+              });
+              $("#proRow").html(proInfo);
+          }
+        });
+      };
+      searchText("");
+
+      $(".search").submit(function (event) {
+        event.preventDefault(); 
+        let searchValue = $(".search input").val();
+        searchText(searchValue);
+    });
+    //  search bar end 
+
+      // Print category buttons
+        function loadCategory(link) {
+          $.ajax({
+            url: link,
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+            //    console.log(response)
+              let catInfo = "";
+              response.forEach((category, index) => {
+                catInfo += `<button type="button" class="col-lg-1 col-3 p-lg-0 btn btn-secondary catBtn text-capitalize">${category}</button>`;
+              });
+            
+              $("#catRow").html(catInfo);
+            },
+            error: function() {
+              console.log(error);
+            },
+            
+          });
+          
+        }  
+        loadCategory("https://dummyjson.com/products/categories");
+
+  });
+              
+    </script>
+
+
+  </body>
+</html>
